@@ -1,0 +1,211 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f0f0f;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 32px 20px;
+    min-height: 100vh;
+  }
+
+  svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+</style>
+</head>
+<body>
+
+<svg width="1400" height="780" xmlns="http://www.w3.org/2000/svg">
+
+  
+  <rect width="1400" height="780" fill="#0f0f0f"></rect>
+
+  
+  <text x="700" y="32" text-anchor="middle" font-size="15" font-weight="700" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif">Agentic Career Counselling Companion — Sequence Diagram</text>
+  <text x="700" y="50" text-anchor="middle" font-size="10" fill="#64748b" font-family="Segoe UI, system-ui, sans-serif">IBM Granite-4-h-small · watsonx.ai · watsonx Orchestrate · ReAct Pattern</text>
+
+  
+
+  
+  <rect x="30" y="65" width="130" height="38" rx="5" fill="#1a1d27" stroke="#4f8ef7" stroke-width="1.5"></rect>
+  <text x="95" y="89" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">User</text>
+
+  
+  <rect x="210" y="65" width="165" height="38" rx="5" fill="#1a1d27" stroke="#f97316" stroke-width="1.5"></rect>
+  <text x="292" y="83" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">career_counsellor</text>
+  <text x="292" y="97" text-anchor="middle" font-size="9" fill="#f97316" font-family="Segoe UI, system-ui, sans-serif">_agent.yaml</text>
+
+  
+  <rect x="425" y="65" width="145" height="38" rx="5" fill="#1a1d27" stroke="#22c55e" stroke-width="1.5"></rect>
+  <text x="497" y="83" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Flask Backend</text>
+  <text x="497" y="97" text-anchor="middle" font-size="9" fill="#22c55e" font-family="Segoe UI, system-ui, sans-serif">app.py</text>
+
+  
+  <rect x="622" y="65" width="155" height="38" rx="5" fill="#1a1d27" stroke="#eab308" stroke-width="1.5"></rect>
+  <text x="699" y="83" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Granite (watsonx.ai)</text>
+  <text x="699" y="97" text-anchor="middle" font-size="9" fill="#eab308" font-family="Segoe UI, system-ui, sans-serif">ibm/granite-4-h-small</text>
+
+  
+  <rect x="832" y="65" width="155" height="38" rx="5" fill="#1a1d27" stroke="#f97316" stroke-width="1.5"></rect>
+  <text x="909" y="83" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Sub-Agent</text>
+  <text x="909" y="97" text-anchor="middle" font-size="9" fill="#f97316" font-family="Segoe UI, system-ui, sans-serif">pathway / skill_gap / profile</text>
+
+  
+  <rect x="1047" y="65" width="135" height="38" rx="5" fill="#1a1d27" stroke="#eab308" stroke-width="1.5"></rect>
+  <text x="1114" y="83" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Granite (LLM)</text>
+  <text x="1114" y="97" text-anchor="middle" font-size="9" fill="#eab308" font-family="Segoe UI, system-ui, sans-serif">ReAct Reasoning</text>
+
+  
+  <rect x="1242" y="65" width="130" height="38" rx="5" fill="#1a1d27" stroke="#ef4444" stroke-width="1.5"></rect>
+  <text x="1307" y="83" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Tool</text>
+  <text x="1307" y="97" text-anchor="middle" font-size="9" fill="#ef4444" font-family="Segoe UI, system-ui, sans-serif">career_pathway_tool.py</text>
+
+  
+  
+  <line x1="95" y1="103" x2="95" y2="700" stroke="#4f8ef7" stroke-width="1" opacity="0.4"></line>
+  
+  <line x1="292" y1="103" x2="292" y2="700" stroke="#f97316" stroke-width="1" opacity="0.4"></line>
+  
+  <line x1="497" y1="103" x2="497" y2="700" stroke="#22c55e" stroke-width="1" opacity="0.4"></line>
+  
+  <line x1="699" y1="103" x2="699" y2="700" stroke="#eab308" stroke-width="1" opacity="0.4"></line>
+  
+  <line x1="909" y1="103" x2="909" y2="700" stroke="#f97316" stroke-width="1" opacity="0.4"></line>
+  
+  <line x1="1114" y1="103" x2="1114" y2="700" stroke="#eab308" stroke-width="1" opacity="0.4"></line>
+  
+  <line x1="1307" y1="103" x2="1307" y2="700" stroke="#ef4444" stroke-width="1" opacity="0.4"></line>
+
+
+  
+
+  
+  <line x1="95" y1="145" x2="280" y2="145" stroke="#e2e8f0" stroke-width="1.5"></line>
+  <polygon points="280,140 292,145 280,150" fill="#e2e8f0"></polygon>
+  <text x="185" y="139" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif">"Suggest a career for me"</text>
+
+  
+  <line x1="292" y1="170" x2="485" y2="170" stroke="#22c55e" stroke-width="1.5"></line>
+  <polygon points="485,165 497,170 485,175" fill="#22c55e"></polygon>
+  <text x="390" y="164" text-anchor="middle" font-size="10" fill="#22c55e" font-family="Segoe UI, system-ui, sans-serif">POST /api/assess (subjects, interests)</text>
+
+  
+  <rect x="440" y="182" width="115" height="22" rx="4" fill="rgba(34,197,94,0.12)" stroke="rgba(34,197,94,0.4)" stroke-width="1"></rect>
+  <text x="497" y="197" text-anchor="middle" font-size="9.5" fill="#22c55e" font-family="Segoe UI, system-ui, sans-serif">score_pathways()</text>
+
+  
+  <line x1="497" y1="220" x2="687" y2="220" stroke="#eab308" stroke-width="1.5"></line>
+  <polygon points="687,215 699,220 687,225" fill="#eab308"></polygon>
+  <text x="592" y="214" text-anchor="middle" font-size="10" fill="#eab308" font-family="Segoe UI, system-ui, sans-serif">IAM token request (API key)</text>
+
+  
+  <line x1="699" y1="243" x2="509" y2="243" stroke="#eab308" stroke-width="1"></line>
+  <polygon points="509,238 497,243 509,248" fill="#eab308"></polygon>
+  <text x="592" y="237" text-anchor="middle" font-size="10" fill="#eab308" font-family="Segoe UI, system-ui, sans-serif">Bearer token</text>
+
+  
+  <line x1="497" y1="268" x2="687" y2="268" stroke="#eab308" stroke-width="1.5"></line>
+  <polygon points="687,263 699,268 687,273" fill="#eab308"></polygon>
+  <text x="592" y="262" text-anchor="middle" font-size="10" fill="#eab308" font-family="Segoe UI, system-ui, sans-serif">Prompt (career profile + top fields)</text>
+
+  
+  <rect x="865" y="285" width="490" height="270" rx="6" fill="none" stroke="#475569" stroke-width="1.5"></rect>
+  <rect x="865" y="285" width="60" height="18" rx="3" fill="#1e293b"></rect>
+  <text x="895" y="298" text-anchor="middle" font-size="9" fill="#94a3b8" font-family="Segoe UI, system-ui, sans-serif" font-weight="700">loop</text>
+  <text x="1110" y="298" text-anchor="middle" font-size="9" fill="#64748b" font-family="Segoe UI, system-ui, sans-serif">[ReAct iterations]</text>
+
+  
+  <line x1="909" y1="318" x2="1102" y2="318" stroke="#eab308" stroke-width="1.5"></line>
+  <polygon points="1102,313 1114,318 1102,323" fill="#eab308"></polygon>
+  <text x="1010" y="312" text-anchor="middle" font-size="9.5" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif">Prompt (System + Tools + History)</text>
+
+  
+  <line x1="1114" y1="343" x2="921" y2="343" stroke="#eab308" stroke-width="1"></line>
+  <polygon points="921,338 909,343 921,348" fill="#eab308"></polygon>
+  <text x="1010" y="337" text-anchor="middle" font-size="9.5" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif">Thought / Action / Action Input</text>
+
+  
+  <line x1="909" y1="370" x2="1295" y2="370" stroke="#ef4444" stroke-width="1.5"></line>
+  <polygon points="1295,365 1307,370 1295,375" fill="#ef4444"></polygon>
+  <text x="1105" y="364" text-anchor="middle" font-size="9.5" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif">Call selected tool with args</text>
+
+  
+  <line x1="1307" y1="398" x2="921" y2="398" stroke="#ef4444" stroke-width="1"></line>
+  <polygon points="921,393 909,398 921,403" fill="#ef4444"></polygon>
+  <text x="1105" y="392" text-anchor="middle" font-size="9.5" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif">Observation (result)</text>
+
+  
+  <line x1="909" y1="425" x2="1102" y2="425" stroke="#eab308" stroke-width="1.5"></line>
+  <polygon points="1102,420 1114,425 1102,430" fill="#eab308"></polygon>
+  <text x="1010" y="419" text-anchor="middle" font-size="9.5" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif">Append Observation, ask again</text>
+
+  
+  <line x1="1114" y1="453" x2="921" y2="453" stroke="#eab308" stroke-width="1"></line>
+  <polygon points="921,448 909,453 921,458" fill="#eab308"></polygon>
+  <text x="1010" y="447" text-anchor="middle" font-size="9.5" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif">Final Answer</text>
+
+  
+  <text x="1115" y="540" text-anchor="middle" font-size="8.5" fill="#475569" font-family="Segoe UI, system-ui, sans-serif">[until answer complete]</text>
+
+  
+  <line x1="909" y1="575" x2="509" y2="575" stroke="#22c55e" stroke-width="1"></line>
+  <polygon points="509,570 497,575 509,580" fill="#22c55e"></polygon>
+  <text x="700" y="569" text-anchor="middle" font-size="10" fill="#22c55e" font-family="Segoe UI, system-ui, sans-serif">Structured pathways + AI advice</text>
+
+  
+  <line x1="699" y1="600" x2="509" y2="600" stroke="#eab308" stroke-width="1"></line>
+  <polygon points="509,595 497,600 509,605" fill="#eab308"></polygon>
+  <text x="592" y="594" text-anchor="middle" font-size="10" fill="#eab308" font-family="Segoe UI, system-ui, sans-serif">Generated career report</text>
+
+  
+  <line x1="497" y1="625" x2="304" y2="625" stroke="#22c55e" stroke-width="1"></line>
+  <polygon points="304,620 292,625 304,630" fill="#22c55e"></polygon>
+  <text x="390" y="619" text-anchor="middle" font-size="10" fill="#22c55e" font-family="Segoe UI, system-ui, sans-serif">JSON { pathways[], advice }</text>
+
+  
+  <line x1="292" y1="655" x2="107" y2="655" stroke="#4f8ef7" stroke-width="1"></line>
+  <polygon points="107,650 95,655 107,660" fill="#4f8ef7"></polygon>
+  <text x="193" y="649" text-anchor="middle" font-size="10" fill="#4f8ef7" font-family="Segoe UI, system-ui, sans-serif">Formatted career counselling response</text>
+
+
+  
+
+  <rect x="30" y="700" width="130" height="38" rx="5" fill="#1a1d27" stroke="#4f8ef7" stroke-width="1.5"></rect>
+  <text x="95" y="724" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">User</text>
+
+  <rect x="210" y="700" width="165" height="38" rx="5" fill="#1a1d27" stroke="#f97316" stroke-width="1.5"></rect>
+  <text x="292" y="718" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">career_counsellor</text>
+  <text x="292" y="732" text-anchor="middle" font-size="9" fill="#f97316" font-family="Segoe UI, system-ui, sans-serif">_agent.yaml</text>
+
+  <rect x="425" y="700" width="145" height="38" rx="5" fill="#1a1d27" stroke="#22c55e" stroke-width="1.5"></rect>
+  <text x="497" y="718" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Flask Backend</text>
+  <text x="497" y="732" text-anchor="middle" font-size="9" fill="#22c55e" font-family="Segoe UI, system-ui, sans-serif">app.py</text>
+
+  <rect x="622" y="700" width="155" height="38" rx="5" fill="#1a1d27" stroke="#eab308" stroke-width="1.5"></rect>
+  <text x="699" y="718" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Granite (watsonx.ai)</text>
+  <text x="699" y="732" text-anchor="middle" font-size="9" fill="#eab308" font-family="Segoe UI, system-ui, sans-serif">ibm/granite-4-h-small</text>
+
+  <rect x="832" y="700" width="155" height="38" rx="5" fill="#1a1d27" stroke="#f97316" stroke-width="1.5"></rect>
+  <text x="909" y="718" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Sub-Agent</text>
+  <text x="909" y="732" text-anchor="middle" font-size="9" fill="#f97316" font-family="Segoe UI, system-ui, sans-serif">pathway / skill_gap / profile</text>
+
+  <rect x="1047" y="700" width="135" height="38" rx="5" fill="#1a1d27" stroke="#eab308" stroke-width="1.5"></rect>
+  <text x="1114" y="718" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Granite (LLM)</text>
+  <text x="1114" y="732" text-anchor="middle" font-size="9" fill="#eab308" font-family="Segoe UI, system-ui, sans-serif">ReAct Reasoning</text>
+
+  <rect x="1242" y="700" width="130" height="38" rx="5" fill="#1a1d27" stroke="#ef4444" stroke-width="1.5"></rect>
+  <text x="1307" y="718" text-anchor="middle" font-size="10" fill="#e2e8f0" font-family="Segoe UI, system-ui, sans-serif" font-weight="600">Tool</text>
+  <text x="1307" y="732" text-anchor="middle" font-size="9" fill="#ef4444" font-family="Segoe UI, system-ui, sans-serif">career_pathway_tool.py</text>
+
+  
+  <text x="700" y="760" text-anchor="middle" font-size="9" fill="#334155" font-family="Segoe UI, system-ui, sans-serif">Made with IBM Bob</text>
+
+</svg>
+
+</body>
+</html>

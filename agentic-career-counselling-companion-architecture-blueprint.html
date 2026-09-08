@@ -1,0 +1,453 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Architecture Blueprint</title>
+<style>
+  :root{
+    --bg:#0f1117;--s:#1a1d27;--card:#21253a;--border:#2e3250;
+    --blue:#4f8ef7;--purple:#8b5cf6;--green:#22c55e;--orange:#f97316;
+    --red:#ef4444;--yellow:#eab308;--teal:#06b6d4;
+    --text:#e2e8f0;--muted:#94a3b8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;
+       padding:2rem;min-height:100vh}
+  h1{font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:.3rem;
+     background:linear-gradient(135deg,var(--blue),var(--purple));
+     -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .subtitle{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:2rem}
+
+  /* ── SECTION LABELS ── */
+  .layer-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+               color:var(--muted);margin-bottom:.6rem;padding-left:.25rem}
+
+  /* ── LAYER BANDS ── */
+  .layer{border:1px solid var(--border);border-radius:14px;padding:1rem 1.25rem;
+         margin-bottom:1.25rem;position:relative}
+  .layer.user-layer  {border-color:rgba(79,142,247,.35);background:rgba(79,142,247,.04)}
+  .layer.front-layer {border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.04)}
+  .layer.back-layer  {border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.04)}
+  .layer.agent-layer {border-color:rgba(249,115,22,.35);background:rgba(249,115,22,.04)}
+  .layer.ibm-layer   {border-color:rgba(234,179,8,.35);background:rgba(234,179,8,.04)}
+  .layer.data-layer  {border-color:rgba(6,182,212,.35);background:rgba(6,182,212,.04)}
+
+  /* ── BOXES ── */
+  .row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-start}
+  .box{border-radius:10px;padding:.65rem 1rem;font-size:.8rem;font-weight:600;
+       display:flex;flex-direction:column;gap:.2rem;min-width:120px;flex:1}
+  .box .bname{font-size:.85rem;font-weight:700}
+  .box .bdesc{font-size:.72rem;font-weight:400;color:var(--muted);margin-top:.1rem}
+  .box .btag{display:inline-block;font-size:.65rem;padding:.1rem .45rem;border-radius:3px;
+             margin-top:.3rem;font-weight:600;width:fit-content}
+
+  /* colours */
+  .b-blue  {background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.3)}
+  .b-purple{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3)}
+  .b-green {background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.3)}
+  .b-orange{background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.3)}
+  .b-yellow{background:rgba(234,179,8,.12); border:1px solid rgba(234,179,8,.3)}
+  .b-teal  {background:rgba(6,182,212,.12); border:1px solid rgba(6,182,212,.3)}
+  .b-red   {background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.3)}
+
+  .t-blue  {background:rgba(79,142,247,.2); color:var(--blue)}
+  .t-purple{background:rgba(139,92,246,.2);color:var(--purple)}
+  .t-green {background:rgba(34,197,94,.2); color:var(--green)}
+  .t-orange{background:rgba(249,115,22,.2);color:var(--orange)}
+  .t-yellow{background:rgba(234,179,8,.2); color:var(--yellow)}
+  .t-teal  {background:rgba(6,182,212,.2); color:var(--teal)}
+
+  /* ── ARROWS ── */
+  .arrow-section{display:flex;justify-content:center;gap:2rem;margin:.4rem 0;flex-wrap:wrap}
+  .arrow{display:flex;flex-direction:column;align-items:center;gap:.15rem}
+  .arrow-line{width:2px;height:28px;background:linear-gradient(to bottom,var(--border),var(--muted))}
+  .arrow-head{width:0;height:0;border-left:6px solid transparent;
+              border-right:6px solid transparent;border-top:8px solid var(--muted)}
+  .arrow-label{font-size:.68rem;color:var(--muted);white-space:nowrap}
+
+  /* ── FLOW DIAGRAM ── */
+  .flow-row{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin:.5rem 0}
+  .flow-box{border-radius:8px;padding:.4rem .9rem;font-size:.78rem;font-weight:600;white-space:nowrap}
+  .flow-arrow{color:var(--muted);font-size:1.1rem;flex-shrink:0}
+
+  /* ── API TABLE ── */
+  table{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:.5rem}
+  th{text-align:left;color:var(--muted);font-weight:600;padding:.45rem .75rem;
+     border-bottom:1px solid var(--border);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+  td{padding:.45rem .75rem;border-bottom:1px solid rgba(46,50,80,.5);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .method{display:inline-block;border-radius:4px;padding:.1rem .45rem;font-weight:700;
+          font-size:.7rem;min-width:40px;text-align:center}
+  .get {background:rgba(34,197,94,.15);color:var(--green)}
+  .post{background:rgba(79,142,247,.15);color:var(--blue)}
+
+  /* ── TECH STACK ── */
+  .stack-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+  .stack-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;
+              padding:.3rem .85rem;font-size:.75rem;display:flex;align-items:center;gap:.4rem}
+  .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+  /* ── DIVIDER ── */
+  .divider{height:1px;background:var(--border);margin:1.5rem 0}
+
+  /* ── FOOTER ── */
+  footer{text-align:center;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);
+         font-size:.72rem;color:var(--muted)}
+
+  @media(max-width:600px){
+    .row{flex-direction:column}
+    .flow-row{flex-direction:column;align-items:flex-start}
+    body{padding:1rem}
+  }
+</style>
+</head>
+<body>
+
+<h1>Agentic Career Counselling Companion</h1>
+<div class="subtitle">Architecture Blueprint  ·  IBM Granite-4-h-small on watsonx.ai  ·  IBM watsonx Orchestrate</div>
+
+
+<div class="layer user-layer">
+  <div class="layer-label">Layer 1 — User Interface</div>
+  <div class="row">
+    <div class="box b-blue">
+      <span class="bname">🎓 Student / User</span>
+      <span class="bdesc">Browser at localhost:5000</span>
+      <span class="btag t-blue">Web Client</span>
+    </div>
+    <div class="box b-blue">
+      <span class="bname">Home Page</span>
+      <span class="bdesc">Feature overview &amp; navigation</span>
+      <span class="btag t-blue">Static HTML</span>
+    </div>
+    <div class="box b-blue">
+      <span class="bname">Career Assessment</span>
+      <span class="bdesc">Subjects · Scores · Interests → Report</span>
+      <span class="btag t-blue">POST /api/assess</span>
+    </div>
+    <div class="box b-blue">
+      <span class="bname">Skill Gap Analyser</span>
+      <span class="bdesc">Target field → Readiness + Roadmap</span>
+      <span class="btag t-blue">POST /api/skillgap</span>
+    </div>
+    <div class="box b-blue">
+      <span class="bname">AI Chat</span>
+      <span class="bdesc">Conversational career counsellor</span>
+      <span class="btag t-blue">POST /api/chat</span>
+    </div>
+    <div class="box b-blue">
+      <span class="bname">Market Intelligence</span>
+      <span class="bdesc">8 career fields · demand · salary</span>
+      <span class="btag t-blue">GET /api/market</span>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-section">
+  <div class="arrow"><div class="arrow-label">HTTP / JSON</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+</div>
+
+
+<div class="layer front-layer">
+  <div class="layer-label">Layer 2 — Frontend (frontend/index.html · 35 KB SPA)</div>
+  <div class="row">
+    <div class="box b-purple">
+      <span class="bname">Navigation Router</span>
+      <span class="bdesc">showPage() — 5 views, zero reload</span>
+      <span class="btag t-purple">Vanilla JS</span>
+    </div>
+    <div class="box b-purple">
+      <span class="bname">Assessment Form</span>
+      <span class="bdesc">Dynamic subject rows · interest chips</span>
+      <span class="btag t-purple">HTML + CSS</span>
+    </div>
+    <div class="box b-purple">
+      <span class="bname">Pathway Cards</span>
+      <span class="bdesc">Ranked results · demand badges · pills</span>
+      <span class="btag t-purple">DOM Render</span>
+    </div>
+    <div class="box b-purple">
+      <span class="bname">Chat UI</span>
+      <span class="bdesc">Bubble messages · typing indicator</span>
+      <span class="btag t-purple">Async fetch()</span>
+    </div>
+    <div class="box b-purple">
+      <span class="bname">Skill Bar</span>
+      <span class="bdesc">Animated readiness % · have/need tags</span>
+      <span class="btag t-purple">CSS Transition</span>
+    </div>
+    <div class="box b-purple">
+      <span class="bname">Market Grid</span>
+      <span class="bdesc">Embedded MARKET_LOCAL data · click expand</span>
+      <span class="btag t-purple">Local Data</span>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-section">
+  <div class="arrow"><div class="arrow-label">Flask WSGI</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+</div>
+
+
+<div class="layer back-layer">
+  <div class="layer-label">Layer 3 — Flask Backend (app.py)</div>
+  <div class="row">
+    <div class="box b-green">
+      <span class="bname">GET /</span>
+      <span class="bdesc">Serves index.html from /frontend</span>
+      <span class="btag t-green">Static File</span>
+    </div>
+    <div class="box b-green">
+      <span class="bname">POST /api/assess</span>
+      <span class="bdesc">score_pathways() → call_granite()</span>
+      <span class="btag t-green">Pathway + AI Report</span>
+    </div>
+    <div class="box b-green">
+      <span class="bname">POST /api/skillgap</span>
+      <span class="bdesc">REQUIRED skills diff → call_granite()</span>
+      <span class="btag t-green">Gap + Roadmap</span>
+    </div>
+    <div class="box b-green">
+      <span class="bname">POST /api/chat</span>
+      <span class="bdesc">History context → call_granite()</span>
+      <span class="btag t-green">Conversation</span>
+    </div>
+    <div class="box b-green">
+      <span class="bname">GET /api/market</span>
+      <span class="bdesc">In-memory MARKET_DATA dict lookup</span>
+      <span class="btag t-green">Embedded Data</span>
+    </div>
+  </div>
+
+  
+  <div style="margin-top:1rem">
+    <div class="layer-label" style="margin-bottom:.4rem">Internal Logic — Pathway Scoring Engine</div>
+    <div class="flow-row">
+      <div class="flow-box b-green">subjects[] + interests[]</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box b-green">SUBJECT_MAP weight ×2</div>
+      <div class="flow-arrow">+</div>
+      <div class="flow-box b-green">INTEREST_MAP weight ×1</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box b-green">score_pathways()</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box b-green">Top-3 ranked fields</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box b-orange">Granite prompt</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-section">
+  <div class="arrow">
+    <div class="arrow-label">HTTPS · Bearer token</div>
+    <div class="arrow-line"></div><div class="arrow-head"></div>
+  </div>
+  <div class="arrow">
+    <div class="arrow-label">IAM token exchange</div>
+    <div class="arrow-line"></div><div class="arrow-head"></div>
+  </div>
+</div>
+
+
+<div class="layer ibm-layer">
+  <div class="layer-label">Layer 4 — IBM Cloud Services</div>
+  <div class="row">
+    <div class="box b-yellow">
+      <span class="bname">IBM IAM</span>
+      <span class="bdesc">iam.cloud.ibm.com/identity/token</span>
+      <span class="bdesc">API key → Bearer token exchange</span>
+      <span class="btag t-yellow">Auth Gateway</span>
+    </div>
+    <div class="box b-yellow">
+      <span class="bname">IBM Granite-4-h-small</span>
+      <span class="bdesc">us-south.ml.cloud.ibm.com/ml/v1/text/generation</span>
+      <span class="bdesc">Model: ibm/granite-4-h-small</span>
+      <span class="btag t-yellow">Core LLM</span>
+    </div>
+    <div class="box b-yellow">
+      <span class="bname">watsonx.ai Project</span>
+      <span class="bdesc">Project ID: 96976d6c-b08d-…</span>
+      <span class="bdesc">Region: us-south</span>
+      <span class="btag t-yellow">Workspace</span>
+    </div>
+    <div class="box b-yellow">
+      <span class="bname">IBM watsonx Orchestrate</span>
+      <span class="bdesc">Multi-agent framework</span>
+      <span class="bdesc">Agents · Flows · Tools · KBs</span>
+      <span class="btag t-yellow">Agent Runtime</span>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-section">
+  <div class="arrow"><div class="arrow-label">orchestrate CLI / MCP</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+</div>
+
+
+<div class="layer agent-layer">
+  <div class="layer-label">Layer 5 — watsonx Orchestrate Multi-Agent System</div>
+  <div class="row">
+    <div class="box b-orange" style="border:2px solid var(--orange);flex:2;min-width:180px">
+      <span class="bname">🎯 career_counsellor_agent</span>
+      <span class="bdesc">Main orchestrator — routes to sub-agents</span>
+      <span class="bdesc">Tools: career_assessment_flow · call_granite_llm · get_top_career_fields</span>
+      <span class="btag t-orange">Orchestrator</span>
+    </div>
+    <div style="flex:3;display:flex;flex-direction:column;gap:.6rem">
+      <div class="row" style="margin:0">
+        <div class="box b-orange">
+          <span class="bname">career_profile_agent</span>
+          <span class="bdesc">Collects &amp; stores student profiles</span>
+          <span class="btag t-orange">Sub-Agent</span>
+        </div>
+        <div class="box b-orange">
+          <span class="bname">career_pathway_agent</span>
+          <span class="bdesc">Career recommendations &amp; market data</span>
+          <span class="btag t-orange">Sub-Agent</span>
+        </div>
+        <div class="box b-orange">
+          <span class="bname">skill_gap_agent</span>
+          <span class="bdesc">Skill analysis &amp; study roadmaps</span>
+          <span class="btag t-orange">Sub-Agent</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div style="margin-top:.85rem">
+    <div class="layer-label" style="margin-bottom:.4rem">Python Tools (career_counsellor/tools/)</div>
+    <div class="row">
+      <div class="box b-red"><span class="bname">granite_llm_tool</span><span class="bdesc">Direct Granite API calls</span></div>
+      <div class="box b-red"><span class="bname">student_profile_tool</span><span class="bdesc">save / get profile</span></div>
+      <div class="box b-red"><span class="bname">career_pathway_tool</span><span class="bdesc">generate_career_pathways</span></div>
+      <div class="box b-red"><span class="bname">market_trends_tool</span><span class="bdesc">get_market_trends</span></div>
+      <div class="box b-red"><span class="bname">skill_gap_tool</span><span class="bdesc">analyse_skill_gap</span></div>
+    </div>
+    <div class="layer-label" style="margin:.6rem 0 .4rem">Flow Tools</div>
+    <div class="row">
+      <div class="box b-orange"><span class="bname">career_assessment_flow</span><span class="bdesc">START → prepare_assessment → Granite prompt → END</span></div>
+      <div class="box b-orange"><span class="bname">skill_gap_coaching_flow</span><span class="bdesc">START → Granite study roadmap → END</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-section">
+  <div class="arrow"><div class="arrow-label">Embedded / In-memory</div><div class="arrow-line"></div><div class="arrow-head"></div></div>
+</div>
+
+
+<div class="layer data-layer">
+  <div class="layer-label">Layer 6 — Data &amp; Knowledge (Embedded, No External DB)</div>
+  <div class="row">
+    <div class="box b-teal">
+      <span class="bname">MARKET_DATA</span>
+      <span class="bdesc">8 career fields · demand · salary · growth · skills · sectors</span>
+      <span class="btag t-teal">In-memory dict</span>
+    </div>
+    <div class="box b-teal">
+      <span class="bname">SUBJECT_MAP</span>
+      <span class="bdesc">12 subjects → career field affinities (weight ×2)</span>
+      <span class="btag t-teal">Scoring engine</span>
+    </div>
+    <div class="box b-teal">
+      <span class="bname">INTEREST_MAP</span>
+      <span class="bdesc">12 interests → career field affinities (weight ×1)</span>
+      <span class="btag t-teal">Scoring engine</span>
+    </div>
+    <div class="box b-teal">
+      <span class="bname">REQUIRED skills</span>
+      <span class="bdesc">Per-field skill requirements for gap analysis</span>
+      <span class="btag t-teal">Gap engine</span>
+    </div>
+    <div class="box b-teal">
+      <span class="bname">_PROFILES store</span>
+      <span class="bdesc">Student profiles (session memory)</span>
+      <span class="btag t-teal">Runtime dict</span>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+
+<div class="layer-label">REST API Reference</div>
+<table>
+  <thead><tr><th>Method</th><th>Endpoint</th><th>Input</th><th>Output</th><th>Calls Granite</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><span class="method get">GET</span></td>
+      <td><code>/</code></td>
+      <td>—</td><td>index.html SPA</td><td>No</td>
+    </tr>
+    <tr>
+      <td><span class="method post">POST</span></td>
+      <td><code>/api/assess</code></td>
+      <td>name, age, grade, subjects[], interests[], skills, workStyle</td>
+      <td>pathways[] (ranked), advice (Granite report)</td><td style="color:var(--green)">Yes</td>
+    </tr>
+    <tr>
+      <td><span class="method post">POST</span></td>
+      <td><code>/api/skillgap</code></td>
+      <td>name, targetField, currentSkills, months, hours</td>
+      <td>present[], missing[], readiness %, roadmap (Granite)</td><td style="color:var(--green)">Yes</td>
+    </tr>
+    <tr>
+      <td><span class="method post">POST</span></td>
+      <td><code>/api/chat</code></td>
+      <td>message, history[]</td>
+      <td>reply (Granite conversational response)</td><td style="color:var(--green)">Yes</td>
+    </tr>
+    <tr>
+      <td><span class="method get">GET</span></td>
+      <td><code>/api/market</code></td>
+      <td>?field=data science (optional)</td>
+      <td>Market data object or {fields:[]} list</td><td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="divider"></div>
+
+
+<div class="layer-label" style="margin-bottom:.6rem">Technology Stack</div>
+<div class="stack-row">
+  <div class="stack-chip"><div class="dot" style="background:var(--yellow)"></div>IBM Granite-4-h-small</div>
+  <div class="stack-chip"><div class="dot" style="background:var(--yellow)"></div>IBM watsonx.ai (us-south)</div>
+  <div class="stack-chip"><div class="dot" style="background:var(--orange)"></div>IBM watsonx Orchestrate</div>
+  <div class="stack-chip"><div class="dot" style="background:var(--green)"></div>Flask 3.x (Python backend)</div>
+  <div class="stack-chip"><div class="dot" style="background:var(--purple)"></div>Vanilla JS SPA (frontend)</div>
+  <div class="stack-chip"><div class="dot" style="background:var(--blue)"></div>IBM IAM Token Auth</div>
+  <div class="stack-chip"><div class="dot" style="background:var(--teal)"></div>Embedded Knowledge Base</div>
+  <div class="stack-chip"><div class="dot" style="background:var(--red)"></div>watsonx Orchestrate ADK</div>
+</div>
+
+<div class="divider"></div>
+
+
+<div class="layer-label" style="margin-bottom:.6rem">End-to-End Data Flow — Career Assessment</div>
+<div class="flow-row">
+  <div class="flow-box b-blue">Student fills form</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box b-purple">fetch POST /api/assess</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box b-green">score_pathways()</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box b-green">Build Granite prompt</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box b-yellow">IAM token</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box b-yellow">Granite API call</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box b-orange">JSON response</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-box b-purple">Render pathways + report</div>
+</div>
+
+<footer>
+  Made with IBM Bob  ·  Agentic Career Counselling Companion  ·  IBM Granite-4-h-small · watsonx.ai · watsonx Orchestrate
+</footer>
+</body>
+</html>

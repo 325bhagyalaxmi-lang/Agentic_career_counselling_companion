@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Agentic Career Counselling Companion</title>
+<style>
+  :root{
+    --bg:#0f1117;--surface:#1a1d27;--card:#21253a;--border:#2e3250;
+    --blue:#4f8ef7;--purple:#8b5cf6;--green:#22c55e;--orange:#f97316;
+    --red:#ef4444;--text:#e2e8f0;--muted:#94a3b8;--accent:#60a5fa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+  a{color:var(--blue)}
+
+  /* ── NAV ── */
+  nav{background:var(--surface);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 2rem;height:60px;position:sticky;top:0;z-index:100}
+  .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1.1rem}
+  .logo svg{width:28px;height:28px}
+  .nav-tabs{display:flex;gap:.25rem}
+  .tab{background:none;border:none;color:var(--muted);padding:.45rem 1rem;
+       border-radius:6px;cursor:pointer;font-size:.9rem;transition:.2s}
+  .tab.active,.tab:hover{background:var(--card);color:var(--text)}
+
+  /* ── LAYOUT ── */
+  .page{display:none;padding:2rem;max-width:1100px;margin:0 auto}
+  .page.active{display:block}
+
+  /* ── HERO ── */
+  .hero{text-align:center;padding:3rem 1rem 2rem}
+  .hero h1{font-size:2.4rem;font-weight:800;
+           background:linear-gradient(135deg,var(--blue),var(--purple));
+           -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.75rem}
+  .hero p{color:var(--muted);max-width:560px;margin:0 auto 2rem;line-height:1.7}
+  .badge{display:inline-flex;align-items:center;gap:.4rem;background:var(--card);
+         border:1px solid var(--border);border-radius:20px;padding:.3rem .9rem;
+         font-size:.8rem;color:var(--muted);margin-bottom:1rem}
+  .badge span{width:8px;height:8px;border-radius:50%;background:var(--green);
+              box-shadow:0 0 6px var(--green);display:inline-block;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  /* ── CARDS ── */
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.25rem}
+  .card h3{font-size:1rem;margin-bottom:1rem;color:var(--text)}
+  .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-bottom:1.5rem}
+  .feature-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;cursor:pointer;transition:.2s}
+  .feature-card:hover{border-color:var(--blue);transform:translateY(-2px)}
+  .feature-card .icon{font-size:2rem;margin-bottom:.75rem}
+  .feature-card h3{font-size:1rem;margin-bottom:.4rem}
+  .feature-card p{font-size:.85rem;color:var(--muted);line-height:1.5}
+
+  /* ── FORMS ── */
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+  .form-group{margin-bottom:1rem}
+  label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
+  input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--border);
+    color:var(--text);padding:.6rem .9rem;border-radius:8px;font-size:.9rem;
+    outline:none;transition:.2s;font-family:inherit}
+  input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(79,142,247,.15)}
+  select option{background:var(--surface)}
+  textarea{resize:vertical;min-height:80px}
+
+  /* ── SUBJECTS TABLE ── */
+  .subjects-table{width:100%;border-collapse:collapse}
+  .subjects-table th{text-align:left;font-size:.8rem;color:var(--muted);padding:.4rem .6rem;
+                     border-bottom:1px solid var(--border)}
+  .subjects-table td{padding:.4rem .6rem}
+  .subjects-table input{padding:.35rem .6rem}
+  .subjects-table .del-btn{background:none;border:none;color:var(--red);cursor:pointer;font-size:1rem;padding:.2rem .5rem}
+  .add-btn{background:none;border:1px dashed var(--border);color:var(--muted);
+           padding:.4rem 1rem;border-radius:6px;cursor:pointer;width:100%;margin-top:.5rem;
+           font-size:.85rem;transition:.2s}
+  .add-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+  /* ── CHIPS ── */
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+  .chip{background:var(--surface);border:1px solid var(--border);border-radius:20px;
+        padding:.3rem .8rem;font-size:.8rem;cursor:pointer;transition:.2s;user-select:none}
+  .chip.sel{background:rgba(79,142,247,.15);border-color:var(--blue);color:var(--blue)}
+
+  /* ── BUTTONS ── */
+  .btn{padding:.65rem 1.4rem;border:none;border-radius:8px;cursor:pointer;font-size:.9rem;
+       font-weight:600;transition:.2s;display:inline-flex;align-items:center;gap:.5rem}
+  .btn-primary{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff}
+  .btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+  .btn-outline{background:none;border:1px solid var(--border);color:var(--text)}
+  .btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+  /* ── RESULTS ── */
+  .result-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+              padding:1.25rem;white-space:pre-wrap;line-height:1.75;font-size:.9rem;min-height:80px}
+  .pathway-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin:1rem 0}
+  .pathway-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+  .pathway-card .field-name{font-weight:700;font-size:1rem;margin-bottom:.5rem}
+  .pathway-card .stat{font-size:.8rem;color:var(--muted);display:flex;gap:.4rem;align-items:center;margin:.25rem 0}
+  .pill{display:inline-block;background:rgba(79,142,247,.12);color:var(--blue);
+        border-radius:4px;padding:.15rem .5rem;font-size:.75rem;margin:.2rem .15rem 0 0}
+  .pill.green{background:rgba(34,197,94,.12);color:var(--green)}
+  .pill.orange{background:rgba(249,115,22,.12);color:var(--orange)}
+  .demand-badge{display:inline-block;border-radius:4px;font-size:.75rem;
+                padding:.2rem .6rem;font-weight:600;margin-bottom:.5rem}
+  .demand-badge.vh{background:rgba(34,197,94,.15);color:var(--green)}
+  .demand-badge.h {background:rgba(79,142,247,.15);color:var(--blue)}
+  .demand-badge.m {background:rgba(249,115,22,.15);color:var(--orange)}
+
+  /* ── SKILL GAP ── */
+  .skill-bar-wrap{margin:1rem 0}
+  .skill-bar-label{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem}
+  .skill-bar-bg{background:var(--surface);border-radius:6px;height:10px;overflow:hidden;border:1px solid var(--border)}
+  .skill-bar-fill{height:100%;border-radius:6px;transition:width 1s ease;background:linear-gradient(90deg,var(--blue),var(--purple))}
+  .skill-list{display:flex;flex-wrap:wrap;gap:.5rem;margin:.5rem 0}
+  .skill-tag{padding:.3rem .75rem;border-radius:6px;font-size:.8rem;font-weight:500}
+  .skill-tag.have{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+  .skill-tag.need{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+
+  /* ── CHAT ── */
+  .chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 160px);min-height:500px}
+  .chat-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem}
+  .msg{max-width:78%;display:flex;gap:.75rem;align-items:flex-start}
+  .msg.user{flex-direction:row-reverse;align-self:flex-end}
+  .msg-bubble{background:var(--card);border:1px solid var(--border);border-radius:14px;
+              padding:.75rem 1.1rem;font-size:.9rem;line-height:1.6;white-space:pre-wrap}
+  .msg.user .msg-bubble{background:rgba(79,142,247,.18);border-color:rgba(79,142,247,.3)}
+  .msg-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;
+              justify-content:center;font-size:1rem;flex-shrink:0;margin-top:2px}
+  .msg-avatar.bot{background:linear-gradient(135deg,var(--blue),var(--purple))}
+  .msg-avatar.user{background:var(--card);border:1px solid var(--border)}
+  .chat-input-row{display:flex;gap:.75rem;padding:.75rem;border-top:1px solid var(--border);
+                  background:var(--surface)}
+  .chat-input-row input{flex:1}
+  .typing-dots span{width:7px;height:7px;background:var(--muted);border-radius:50%;
+                    display:inline-block;margin:0 2px;animation:blink 1.2s infinite}
+  .typing-dots span:nth-child(2){animation-delay:.2s}
+  .typing-dots span:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+  /* ── MARKET ── */
+  .market-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1rem}
+  .market-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;cursor:pointer;transition:.2s}
+  .market-card:hover,.market-card.sel{border-color:var(--blue);background:rgba(79,142,247,.05)}
+  .market-card .mf{font-weight:700;margin-bottom:.4rem}
+  .market-detail{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+                 padding:1.5rem;margin-top:1rem;display:none}
+  .market-detail.show{display:block}
+  .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem}
+  .detail-stat{background:var(--card);border-radius:8px;padding:1rem}
+  .detail-stat .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+  .detail-stat .value{font-size:1.1rem;font-weight:700}
+
+  /* ── SPINNER ── */
+  .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);
+           border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ── MISC ── */
+  .section-title{font-size:1.2rem;font-weight:700;margin-bottom:1rem;color:var(--text)}
+  .divider{height:1px;background:var(--border);margin:1.5rem 0}
+  .hint{font-size:.8rem;color:var(--muted);margin-top:.3rem}
+  .success-bar{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);
+               color:var(--green);border-radius:8px;padding:.75rem 1rem;font-size:.85rem;margin-bottom:1rem;display:none}
+  .error-bar{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);
+             color:var(--red);border-radius:8px;padding:.75rem 1rem;font-size:.85rem;margin-bottom:1rem;display:none}
+  .ibm-brand{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--muted);margin-top:1.5rem}
+  .ibm-brand svg{width:40px}
+
+  @media(max-width:640px){
+    .form-row{grid-template-columns:1fr}
+    .hero h1{font-size:1.8rem}
+    nav{padding:0 1rem}
+    .page{padding:1rem}
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <div class="logo">
+    <svg viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="8" fill="url(#g)"/>
+      <text x="5" y="22" font-size="18" fill="white">🎓</text>
+      <defs><linearGradient id="g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#4f8ef7"/><stop offset="1" stop-color="#8b5cf6"/>
+      </linearGradient></defs>
+    </svg>
+    CareerAI
+  </div>
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showPage('home')">Home</button>
+    <button class="tab" onclick="showPage('assess')">Assessment</button>
+    <button class="tab" onclick="showPage('skillgap')">Skill Gap</button>
+    <button class="tab" onclick="showPage('chat')">AI Chat</button>
+    <button class="tab" onclick="showPage('market')">Market</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════ HOME ══════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="badge"><span></span> IBM Granite AI · watsonx.ai</div>
+    <h1>Your Agentic Career<br>Counselling Companion</h1>
+    <p>An intelligent AI agent powered by IBM Granite that analyses your academic strengths,
+       maps evolving interests to real-world career fields, and guides you toward future-ready decisions.</p>
+    <button class="btn btn-primary" onclick="showPage('assess')">Start My Assessment →</button>
+  </div>
+  <div class="grid-3">
+    <div class="feature-card" onclick="showPage('assess')">
+      <div class="icon">🗺️</div>
+      <h3>Career Pathway Finder</h3>
+      <p>Input your subjects and interests — AI matches you with the best-fit career pathways backed by market data.</p>
+    </div>
+    <div class="feature-card" onclick="showPage('skillgap')">
+      <div class="icon">🔍</div>
+      <h3>Skill Gap Analyser</h3>
+      <p>See exactly which skills you need, your readiness percentage, and a personalised study roadmap.</p>
+    </div>
+    <div class="feature-card" onclick="showPage('chat')">
+      <div class="icon">🤖</div>
+      <h3>AI Counsellor Chat</h3>
+      <p>Ask any career question in natural language. Powered by IBM Granite for empathetic, expert guidance.</p>
+    </div>
+    <div class="feature-card" onclick="showPage('market')">
+      <div class="icon">📊</div>
+      <h3>Market Intelligence</h3>
+      <p>Explore demand, salary ranges, growth rates, and required skills for 8 major career fields.</p>
+    </div>
+    <div class="feature-card" onclick="showPage('assess')">
+      <div class="icon">⚡</div>
+      <h3>Instant Report</h3>
+      <p>Get a comprehensive IBM Granite-generated career counselling report in seconds.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🌍</div>
+      <h3>Future-Ready Paths</h3>
+      <p>AI, Cloud, Cybersecurity, Healthcare, UX Design — 8 high-growth fields with real data.</p>
+    </div>
+  </div>
+  <div class="ibm-brand">
+    <svg viewBox="0 0 100 40" fill="none"><text x="0" y="28" font-size="24" font-weight="bold" fill="#4f8ef7">IBM</text></svg>
+    Powered by IBM Granite-4-h-small on watsonx.ai
+  </div>
+</div>
+
+<!-- ══════════════════════ ASSESSMENT ══════════════════════ -->
+<div id="page-assess" class="page">
+  <div class="section-title">🗺️ Career Assessment</div>
+  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:.9rem">
+    Fill in your academic profile and IBM Granite will generate personalised career pathway recommendations.
+  </p>
+
+  <div id="assess-error" class="error-bar"></div>
+
+  <div class="card">
+    <h3>Personal Details</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input id="a-name" type="text" placeholder="e.g. Priya Sharma"/>
+      </div>
+      <div class="form-group">
+        <label>Age</label>
+        <input id="a-age" type="number" min="10" max="30" placeholder="17"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Current Grade / Year</label>
+        <input id="a-grade" type="text" placeholder="e.g. 11th Grade, Year 2 Undergrad"/>
+      </div>
+      <div class="form-group">
+        <label>Preferred Work Style</label>
+        <select id="a-style">
+          <option value="mixed">Mixed</option>
+          <option value="independent">Independent</option>
+          <option value="collaborative">Collaborative</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Academic Subjects & Scores</h3>
+    <table class="subjects-table" id="subjects-table">
+      <thead><tr>
+        <th>Subject</th><th>Score (%)</th><th></th>
+      </tr></thead>
+      <tbody id="subjects-tbody"></tbody>
+    </table>
+    <button class="add-btn" onclick="addSubjectRow()">+ Add Subject</button>
+  </div>
+
+  <div class="card">
+    <h3>Interests <span style="font-size:.8rem;color:var(--muted)">(click to select)</span></h3>
+    <div class="chips" id="interest-chips"></div>
+  </div>
+
+  <div class="card">
+    <h3>Current Skills</h3>
+    <input id="a-skills" type="text" placeholder="e.g. Python, SQL, Figma (comma-separated)"/>
+    <p class="hint">Leave blank if you're just starting out.</p>
+  </div>
+
+  <button class="btn btn-primary" id="assess-btn" onclick="runAssessment()">
+    <span id="assess-btn-text">Generate Career Report</span>
+    <span id="assess-spinner" style="display:none" class="spinner"></span>
+  </button>
+
+  <div id="assess-results" style="display:none;margin-top:1.5rem">
+    <div class="divider"></div>
+    <div class="section-title">🎯 Top Career Pathways</div>
+    <div id="pathways-output" class="pathway-grid"></div>
+    <div class="section-title" style="margin-top:1.5rem">📋 IBM Granite Career Report</div>
+    <div id="advice-output" class="result-box"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ SKILL GAP ══════════════════════ -->
+<div id="page-skillgap" class="page">
+  <div class="section-title">🔍 Skill Gap Analyser</div>
+  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:.9rem">
+    Find out how ready you are for your target career and get a step-by-step study plan from IBM Granite.
+  </p>
+
+  <div id="sg-error" class="error-bar"></div>
+
+  <div class="card">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input id="sg-name" type="text" placeholder="e.g. Rahul Verma"/>
+      </div>
+      <div class="form-group">
+        <label>Target Career Field</label>
+        <select id="sg-field">
+          <option value="artificial intelligence">Artificial Intelligence</option>
+          <option value="data science">Data Science</option>
+          <option value="cybersecurity">Cybersecurity</option>
+          <option value="cloud computing">Cloud Computing</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="ux design">UX Design</option>
+          <option value="finance">Finance</option>
+          <option value="renewable energy">Renewable Energy</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Current Skills (comma-separated)</label>
+      <input id="sg-skills" type="text" placeholder="e.g. Python, Statistics, SQL"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Timeline (months)</label>
+        <input id="sg-months" type="number" value="6" min="1" max="24"/>
+      </div>
+      <div class="form-group">
+        <label>Study hours / week</label>
+        <input id="sg-hours" type="number" value="10" min="1" max="40"/>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="sg-btn" onclick="runSkillGap()">
+      <span id="sg-btn-text">Analyse My Skill Gap</span>
+      <span id="sg-spinner" style="display:none" class="spinner"></span>
+    </button>
+  </div>
+
+  <div id="sg-results" style="display:none">
+    <div class="card">
+      <h3>Readiness Score</h3>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-label">
+          <span>Your readiness</span>
+          <span id="sg-percent">0%</span>
+        </div>
+        <div class="skill-bar-bg">
+          <div class="skill-bar-fill" id="sg-bar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>✅ Skills You Already Have</h3>
+      <div class="skill-list" id="sg-have"></div>
+    </div>
+    <div class="card">
+      <h3>❌ Skills You Still Need</h3>
+      <div class="skill-list" id="sg-need"></div>
+    </div>
+    <div class="card">
+      <h3>📚 IBM Granite Study Roadmap</h3>
+      <div id="sg-roadmap" class="result-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ CHAT ══════════════════════ -->
+<div id="page-chat" class="page" style="padding:1rem 2rem;max-width:900px;margin:0 auto">
+  <div class="section-title">🤖 AI Career Counsellor Chat</div>
+  <div class="chat-wrap card" style="padding:0">
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-row">
+      <input id="chat-input" type="text" placeholder="Ask me about careers, skills, salaries…"
+             onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button class="btn btn-primary" onclick="sendChat()" id="chat-btn">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ MARKET ══════════════════════ -->
+<div id="page-market" class="page">
+  <div class="section-title">📊 Career Market Intelligence</div>
+  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:.9rem">
+    Click any career field to explore demand, salary, growth rate, top skills, and industries.
+  </p>
+  <div class="market-grid" id="market-grid"></div>
+  <div class="market-detail" id="market-detail">
+    <h3 id="detail-title"></h3>
+    <div class="detail-grid" id="detail-stats"></div>
+    <div style="margin-top:1rem">
+      <div style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Top Skills</div>
+      <div id="detail-skills"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <div style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">Industry Sectors</div>
+      <div id="detail-sectors"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ JAVASCRIPT ══════════════════════ -->
+<script>
+// ── STATE ──
+const INTERESTS = ["coding","design","helping people","environment","problem solving",
+                   "communication","numbers","technology","creativity","science","leadership","security"];
+const chatHistory = [];
+let selectedInterests = new Set();
+
+// ── NAVIGATION ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const tabs = ['home','assess','skillgap','chat','market'];
+  document.querySelectorAll('.tab')[tabs.indexOf(id)]?.classList.add('active');
+  if (id === 'chat' && document.getElementById('chat-messages').children.length === 0) initChat();
+  if (id === 'market') buildMarketGrid();
+}
+
+// ── SUBJECT ROWS ──
+function addSubjectRow(subj='', score='') {
+  const tbody = document.getElementById('subjects-tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" placeholder="e.g. Mathematics" value="${subj}"/></td>
+    <td><input type="number" min="0" max="100" placeholder="85" value="${score}" style="width:80px"/></td>
+    <td><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function getSubjects() {
+  const rows = document.querySelectorAll('#subjects-tbody tr');
+  return Array.from(rows).map(r => {
+    const [s, sc] = r.querySelectorAll('input');
+    return {subject: s.value.trim(), score: parseFloat(sc.value) || 0};
+  }).filter(x => x.subject);
+}
+
+// ── INTEREST CHIPS ──
+function buildInterestChips() {
+  const c = document.getElementById('interest-chips');
+  INTERESTS.forEach(i => {
+    const d = document.createElement('div');
+    d.className = 'chip'; d.textContent = i;
+    d.onclick = () => {
+      d.classList.toggle('sel');
+      selectedInterests.has(i) ? selectedInterests.delete(i) : selectedInterests.add(i);
+    };
+    c.appendChild(d);
+  });
+}
+
+// ── ASSESSMENT ──
+async function runAssessment() {
+  const name = document.getElementById('a-name').value.trim();
+  const age  = document.getElementById('a-age').value;
+  const grade= document.getElementById('a-grade').value.trim();
+  const subjects = getSubjects();
+  const interests = Array.from(selectedInterests);
+  const errBar = document.getElementById('assess-error');
+
+  if (!name || !grade || subjects.length < 1 || interests.length < 1) {
+    errBar.textContent = 'Please fill in your name, grade, at least one subject, and select at least one interest.';
+    errBar.style.display = 'block'; return;
+  }
+  errBar.style.display = 'none';
+
+  setBtnLoading('assess-btn', 'assess-btn-text', 'assess-spinner', true, 'Analysing…');
+  document.getElementById('assess-results').style.display = 'none';
+
+  try {
+    const res = await fetch('/api/assess', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name, age, grade, subjects, interests,
+        skills: document.getElementById('a-skills').value,
+        workStyle: document.getElementById('a-style').value,
+      })
+    });
+    const data = await res.json();
+    renderPathways(data.pathways || []);
+    document.getElementById('advice-output').textContent = data.advice || 'No advice returned.';
+    document.getElementById('assess-results').style.display = 'block';
+    document.getElementById('assess-results').scrollIntoView({behavior:'smooth'});
+  } catch(e) {
+    errBar.textContent = 'Error connecting to server. Make sure app.py is running on port 5000.';
+    errBar.style.display = 'block';
+  } finally {
+    setBtnLoading('assess-btn', 'assess-btn-text', 'assess-spinner', false, 'Generate Career Report');
+  }
+}
+
+function renderPathways(pathways) {
+  const el = document.getElementById('pathways-output');
+  el.innerHTML = '';
+  if (!pathways.length) { el.textContent = 'No pathways generated.'; return; }
+  pathways.forEach((p, i) => {
+    const dmCls = p.demand === 'Very High' ? 'vh' : p.demand === 'High' ? 'h' : 'm';
+    const card = document.createElement('div');
+    card.className = 'pathway-card';
+    card.innerHTML = `
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.2rem">Rank #${i+1}</div>
+      <div class="field-name">${p.field}</div>
+      <span class="demand-badge ${dmCls}">${p.demand} Demand</span>
+      <div class="stat">📈 Growth: ${p.growth}</div>
+      <div class="stat">💰 Salary: ${p.salary}</div>
+      <div style="margin-top:.6rem;font-size:.75rem;color:var(--muted)">Key Skills</div>
+      <div>${(p.skills||[]).map(s=>`<span class="pill">${s}</span>`).join('')}</div>
+      <div style="margin-top:.5rem;font-size:.75rem;color:var(--muted)">Sectors</div>
+      <div>${(p.sectors||[]).map(s=>`<span class="pill green">${s}</span>`).join('')}</div>`;
+    el.appendChild(card);
+  });
+}
+
+// ── SKILL GAP ──
+async function runSkillGap() {
+  const name  = document.getElementById('sg-name').value.trim();
+  const field = document.getElementById('sg-field').value;
+  const skills= document.getElementById('sg-skills').value;
+  const errBar= document.getElementById('sg-error');
+
+  if (!name) { errBar.textContent='Please enter your name.'; errBar.style.display='block'; return; }
+  errBar.style.display = 'none';
+
+  setBtnLoading('sg-btn','sg-btn-text','sg-spinner', true, 'Analysing…');
+  document.getElementById('sg-results').style.display = 'none';
+
+  try {
+    const res = await fetch('/api/skillgap', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name, targetField: field, currentSkills: skills,
+        months: +document.getElementById('sg-months').value,
+        hours:  +document.getElementById('sg-hours').value,
+      })
+    });
+    const data = await res.json();
+
+    document.getElementById('sg-percent').textContent = data.readiness + '%';
+    setTimeout(() => {
+      document.getElementById('sg-bar').style.width = data.readiness + '%';
+    }, 100);
+
+    const haveEl = document.getElementById('sg-have');
+    const needEl = document.getElementById('sg-need');
+    haveEl.innerHTML = (data.present||[]).map(s=>`<span class="skill-tag have">✓ ${s}</span>`).join('') || '<span style="color:var(--muted);font-size:.85rem">None matched — keep learning!</span>';
+    needEl.innerHTML = (data.missing||[]).map(s=>`<span class="skill-tag need">✗ ${s}</span>`).join('') || '<span style="color:var(--green);font-size:.85rem">You have all required skills! 🎉</span>';
+
+    document.getElementById('sg-roadmap').textContent = data.roadmap || 'Roadmap not generated.';
+    document.getElementById('sg-results').style.display = 'block';
+    document.getElementById('sg-results').scrollIntoView({behavior:'smooth'});
+  } catch(e) {
+    errBar.textContent = 'Error connecting to server. Make sure app.py is running on port 5000.';
+    errBar.style.display = 'block';
+  } finally {
+    setBtnLoading('sg-btn','sg-btn-text','sg-spinner', false, 'Analyse My Skill Gap');
+  }
+}
+
+// ── CHAT ──
+function initChat() {
+  addBotMessage("👋 Hello! I'm your AI Career Counsellor powered by IBM Granite. I'm here to help you discover the best career pathways based on your strengths and interests.\n\nYou can ask me things like:\n• \"What career suits someone who loves coding and math?\"\n• \"How do I become a Data Scientist?\"\n• \"What skills do I need for cybersecurity?\"\n• \"What's the salary for AI engineers?\"");
+}
+
+function addBotMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div'); div.className = 'msg bot';
+  div.innerHTML = `<div class="msg-avatar bot">🤖</div><div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+function addUserMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div'); div.className = 'msg user';
+  div.innerHTML = `<div class="msg-avatar user">👤</div><div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+function addTypingIndicator() {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div'); div.className = 'msg bot'; div.id = 'typing';
+  div.innerHTML = `<div class="msg-avatar bot">🤖</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+function removeTypingIndicator() {
+  document.getElementById('typing')?.remove();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addUserMessage(msg);
+  addTypingIndicator();
+  document.getElementById('chat-btn').disabled = true;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ message: msg, history: chatHistory.slice(-6) })
+    });
+    const data = await res.json();
+    removeTypingIndicator();
+    const reply = data.reply || 'Sorry, I could not generate a response.';
+    addBotMessage(reply);
+    chatHistory.push({user: msg, bot: reply});
+  } catch(e) {
+    removeTypingIndicator();
+    addBotMessage('⚠️ Could not connect to the server. Please make sure app.py is running on port 5000.');
+  } finally {
+    document.getElementById('chat-btn').disabled = false;
+  }
+}
+
+// ── MARKET ──
+const MARKET_LOCAL = {
+  "artificial intelligence": {demand:"Very High",growth:"38% / 5 yrs",salary:"$110K–$180K",skills:["Python","TensorFlow","MLOps","LLM Fine-tuning"],sectors:["Tech","Healthcare","Finance","Autonomous Vehicles"]},
+  "data science":            {demand:"Very High",growth:"35% / 5 yrs",salary:"$95K–$160K",skills:["Python","SQL","Statistics","Power BI","Spark"],sectors:["Finance","E-commerce","Healthcare","Government"]},
+  "cybersecurity":           {demand:"High",     growth:"32% / 5 yrs",salary:"$85K–$155K",skills:["Ethical Hacking","SIEM","Zero Trust","Cloud Security"],sectors:["Government","Finance","Healthcare","Defense"]},
+  "cloud computing":         {demand:"Very High",growth:"28% / 5 yrs",salary:"$90K–$150K",skills:["AWS","Kubernetes","Terraform","DevOps"],sectors:["Tech","Retail","Finance","Startups"]},
+  "healthcare":              {demand:"High",     growth:"15% / 5 yrs",salary:"$60K–$200K",skills:["Clinical Skills","EHR","Diagnostics"],sectors:["Hospitals","Pharma","Biotech","Telemedicine"]},
+  "ux design":               {demand:"High",     growth:"18% / 5 yrs",salary:"$65K–$130K",skills:["Figma","User Research","Design Thinking"],sectors:["Tech","E-commerce","Media","Finance"]},
+  "finance":                 {demand:"Moderate", growth:"10% / 5 yrs",salary:"$70K–$200K",skills:["Financial Modelling","CFA","Risk Mgmt"],sectors:["Banking","Insurance","FinTech","Consulting"]},
+  "renewable energy":        {demand:"High",     growth:"22% / 5 yrs",salary:"$70K–$130K",skills:["Solar PV","Wind Engineering","Grid Mgmt"],sectors:["Energy","Government","Manufacturing","Construction"]},
+};
+
+let selectedMarket = null;
+function buildMarketGrid() {
+  const grid = document.getElementById('market-grid');
+  if (grid.children.length) return;
+  Object.entries(MARKET_LOCAL).forEach(([field, data]) => {
+    const dmCls = data.demand==='Very High'?'vh': data.demand==='High'?'h':'m';
+    const card = document.createElement('div'); card.className='market-card';
+    card.innerHTML = `
+      <div class="mf">${field.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ')}</div>
+      <span class="demand-badge ${dmCls}">${data.demand}</span>
+      <div style="font-size:.8rem;color:var(--muted);margin-top:.3rem">${data.growth} growth · ${data.salary}</div>`;
+    card.onclick = () => showMarketDetail(field, data, card);
+    grid.appendChild(card);
+  });
+}
+
+function showMarketDetail(field, data, card) {
+  document.querySelectorAll('.market-card').forEach(c=>c.classList.remove('sel'));
+  card.classList.add('sel');
+  const det = document.getElementById('market-detail');
+  document.getElementById('detail-title').textContent = field.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+  document.getElementById('detail-stats').innerHTML = `
+    <div class="detail-stat"><div class="label">Demand</div><div class="value" style="color:var(--green)">${data.demand}</div></div>
+    <div class="detail-stat"><div class="label">5-Year Growth</div><div class="value" style="color:var(--blue)">${data.growth}</div></div>
+    <div class="detail-stat"><div class="label">Salary Range</div><div class="value" style="color:var(--purple)">${data.salary}</div></div>`;
+  document.getElementById('detail-skills').innerHTML = data.skills.map(s=>`<span class="pill">${s}</span>`).join('');
+  document.getElementById('detail-sectors').innerHTML = data.sectors.map(s=>`<span class="pill green">${s}</span>`).join('');
+  det.classList.add('show');
+  det.scrollIntoView({behavior:'smooth'});
+}
+
+// ── UTILS ──
+function setBtnLoading(btnId, textId, spinnerId, loading, label) {
+  document.getElementById(btnId).disabled = loading;
+  document.getElementById(textId).textContent = label;
+  document.getElementById(spinnerId).style.display = loading ? 'inline-block' : 'none';
+}
+
+// ── INIT ──
+buildInterestChips();
+addSubjectRow('Mathematics', '88');
+addSubjectRow('Computer Science', '85');
+addSubjectRow('Physics', '78');
+</script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f1117;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 32px 16px;
+    min-height: 100vh;
+  }
+
+  .diagram {
+    width: 760px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* ── TITLE ── */
+  .title-block {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .title-block h1 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #e2e8f0;
+    letter-spacing: -0.3px;
+  }
+  .title-block p {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  /* ── LAYER ── */
+  .layer {
+    border-radius: 14px;
+    padding: 14px 18px;
+    position: relative;
+  }
+  .layer-title {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    opacity: 0.7;
+  }
+  .nodes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .node {
+    border-radius: 10px;
+    padding: 10px 14px;
+    text-align: center;
+    min-width: 110px;
+    flex: 1;
+  }
+  .node .icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+  .node .name { font-size: 0.78rem; font-weight: 700; color: #e2e8f0; }
+  .node .sub  { font-size: 0.65rem; color: #94a3b8; margin-top: 2px; line-height: 1.4; }
+
+  /* ── CONNECTOR ── */
+  .connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 0;
+  }
+  .conn-line {
+    width: 2px;
+    height: 22px;
+    background: linear-gradient(to bottom, #2e3250, #4f8ef7);
+  }
+  .conn-arrow {
+    width: 0; height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #4f8ef7;
+  }
+  .conn-label {
+    font-size: 0.62rem;
+    color: #4f8ef7;
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── LAYER COLOUR THEMES ── */
+  /* User */
+  .l-user   { background: rgba(79,142,247,0.08); border: 1.5px solid rgba(79,142,247,0.3); }
+  .l-user   .layer-title { color: #4f8ef7; }
+  .n-user   { background: rgba(79,142,247,0.12); border: 1px solid rgba(79,142,247,0.3); }
+
+  /* Frontend */
+  .l-front  { background: rgba(139,92,246,0.08); border: 1.5px solid rgba(139,92,246,0.3); }
+  .l-front  .layer-title { color: #8b5cf6; }
+  .n-front  { background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3); }
+
+  /* Backend */
+  .l-back   { background: rgba(34,197,94,0.08); border: 1.5px solid rgba(34,197,94,0.3); }
+  .l-back   .layer-title { color: #22c55e; }
+  .n-back   { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); }
+
+  /* Agents */
+  .l-agent  { background: rgba(249,115,22,0.08); border: 1.5px solid rgba(249,115,22,0.3); }
+  .l-agent  .layer-title { color: #f97316; }
+  .n-agent  { background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.3); }
+  .n-agent-main { background: rgba(249,115,22,0.22); border: 2px solid #f97316; }
+
+  /* IBM Cloud */
+  .l-ibm    { background: rgba(234,179,8,0.08); border: 1.5px solid rgba(234,179,8,0.35); }
+  .l-ibm    .layer-title { color: #eab308; }
+  .n-ibm    { background: rgba(234,179,8,0.12); border: 1px solid rgba(234,179,8,0.3); }
+  .n-granite { background: rgba(234,179,8,0.25); border: 2px solid #eab308; }
+
+  /* Tools */
+  .l-tools  { background: rgba(239,68,68,0.07); border: 1.5px solid rgba(239,68,68,0.25); }
+  .l-tools  .layer-title { color: #ef4444; }
+  .n-tool   { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); }
+
+  /* ── FLOW PATH (assessment journey) ── */
+  .flow-path {
+    margin-top: 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #2e3250;
+    border-radius: 12px;
+    padding: 14px 18px;
+  }
+  .flow-path .fp-title {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #64748b;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .fp-nodes {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .fp-node {
+    background: #1a1d27;
+    border: 1px solid #2e3250;
+    border-radius: 7px;
+    padding: 5px 10px;
+    font-size: 0.7rem;
+    color: #cbd5e1;
+    white-space: nowrap;
+  }
+  .fp-arr {
+    color: #4f8ef7;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .fp-node.highlight { border-color: #eab308; color: #eab308; background: rgba(234,179,8,0.08); }
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  
+  <div class="title-block">
+    <h1>Agentic Career Counselling Companion</h1>
+    <p>System Architecture  ·  IBM Granite-4-h-small  ·  watsonx.ai  ·  watsonx Orchestrate</p>
+  </div>
+
+  
+  <div class="layer l-user">
+    <div class="layer-title">① User Interface</div>
+    <div class="nodes">
+      <div class="node n-user"><span class="icon">🎓</span><span class="name">Student</span><span class="sub">Browser</span></div>
+      <div class="node n-user"><span class="icon">🗺️</span><span class="name">Assessment</span><span class="sub">Subjects · Scores · Interests</span></div>
+      <div class="node n-user"><span class="icon">🔍</span><span class="name">Skill Gap</span><span class="sub">Readiness · Study Plan</span></div>
+      <div class="node n-user"><span class="icon">🤖</span><span class="name">AI Chat</span><span class="sub">Conversational Counsellor</span></div>
+      <div class="node n-user"><span class="icon">📊</span><span class="name">Market</span><span class="sub">Demand · Salary · Growth</span></div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line"></div><div class="conn-arrow"></div>
+    <div class="conn-label">HTTP / fetch() JSON</div>
+  </div>
+
+  
+  <div class="layer l-front">
+    <div class="layer-title">② Frontend SPA  ·  frontend/index.html (35 KB · Vanilla JS)</div>
+    <div class="nodes">
+      <div class="node n-front"><span class="icon">🧭</span><span class="name">Page Router</span><span class="sub">showPage()</span></div>
+      <div class="node n-front"><span class="icon">📋</span><span class="name">Forms &amp; Chips</span><span class="sub">Dynamic DOM</span></div>
+      <div class="node n-front"><span class="icon">🃏</span><span class="name">Pathway Cards</span><span class="sub">Ranked results</span></div>
+      <div class="node n-front"><span class="icon">📈</span><span class="name">Skill Bar</span><span class="sub">Animated readiness</span></div>
+      <div class="node n-front"><span class="icon">💬</span><span class="name">Chat Bubbles</span><span class="sub">Typing indicator</span></div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line"></div><div class="conn-arrow"></div>
+    <div class="conn-label">Flask WSGI · Python 3.11</div>
+  </div>
+
+  
+  <div class="layer l-back">
+    <div class="layer-title">③ Flask Backend  ·  app.py</div>
+    <div class="nodes">
+      <div class="node n-back"><span class="icon">🏠</span><span class="name">GET /</span><span class="sub">Serve index.html</span></div>
+      <div class="node n-back"><span class="icon">📝</span><span class="name">POST /assess</span><span class="sub">Pathways + AI report</span></div>
+      <div class="node n-back"><span class="icon">🔎</span><span class="name">POST /skillgap</span><span class="sub">Gap + roadmap</span></div>
+      <div class="node n-back"><span class="icon">💬</span><span class="name">POST /chat</span><span class="sub">Conversation</span></div>
+      <div class="node n-back"><span class="icon">📊</span><span class="name">GET /market</span><span class="sub">Embedded data</span></div>
+      <div class="node n-back"><span class="icon">⚙️</span><span class="name">score_pathways()</span><span class="sub">Subject × 2 + Interest × 1</span></div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line"></div><div class="conn-arrow"></div>
+    <div class="conn-label">HTTPS · IAM Bearer Token</div>
+  </div>
+
+  
+  <div class="layer l-ibm">
+    <div class="layer-title">④ IBM Cloud  ·  watsonx.ai · us-south</div>
+    <div class="nodes">
+      <div class="node n-ibm"><span class="icon">🔐</span><span class="name">IBM IAM</span><span class="sub">API key → Bearer token</span></div>
+      <div class="node n-granite"><span class="icon">🧠</span><span class="name">IBM Granite-4-h-small</span><span class="sub">Career advice · Roadmaps · Chat</span></div>
+      <div class="node n-ibm"><span class="icon">☁️</span><span class="name">watsonx.ai Project</span><span class="sub">96976d6c-b08d-…</span></div>
+      <div class="node n-ibm"><span class="icon">🎼</span><span class="name">watsonx Orchestrate</span><span class="sub">Agent runtime · ADK</span></div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line"></div><div class="conn-arrow"></div>
+    <div class="conn-label">orchestrate CLI / MCP tools</div>
+  </div>
+
+  
+  <div class="layer l-agent">
+    <div class="layer-title">⑤ watsonx Orchestrate Multi-Agent System</div>
+    <div class="nodes">
+      <div class="node n-agent-main" style="min-width:160px;max-width:200px">
+        <span class="icon">🎯</span>
+        <span class="name">career_counsellor_agent</span>
+        <span class="sub">Main Orchestrator<br />Routes to sub-agents</span>
+      </div>
+      <div class="node n-agent"><span class="icon">👤</span><span class="name">profile_agent</span><span class="sub">Saves student data</span></div>
+      <div class="node n-agent"><span class="icon">🗺️</span><span class="name">pathway_agent</span><span class="sub">Career matches</span></div>
+      <div class="node n-agent"><span class="icon">🔍</span><span class="name">skill_gap_agent</span><span class="sub">Gap + study plan</span></div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <div class="conn-line" style="background:linear-gradient(to bottom,#2e3250,#ef4444)"></div>
+    <div class="conn-arrow" style="border-top-color:#ef4444"></div>
+    <div class="conn-label" style="color:#ef4444">Python tools · Flow tools</div>
+  </div>
+
+  
+  <div class="layer l-tools">
+    <div class="layer-title">⑥ Tools &amp; Flows  ·  career_counsellor/tools/</div>
+    <div class="nodes">
+      <div class="node n-tool"><span class="icon">🧠</span><span class="name">granite_llm_tool</span><span class="sub">Direct Granite calls</span></div>
+      <div class="node n-tool"><span class="icon">👤</span><span class="name">student_profile_tool</span><span class="sub">save / get profile</span></div>
+      <div class="node n-tool"><span class="icon">🗺️</span><span class="name">career_pathway_tool</span><span class="sub">generate_career_pathways</span></div>
+      <div class="node n-tool"><span class="icon">📊</span><span class="name">market_trends_tool</span><span class="sub">get_market_trends</span></div>
+      <div class="node n-tool"><span class="icon">🔎</span><span class="name">skill_gap_tool</span><span class="sub">analyse_skill_gap</span></div>
+      <div class="node n-tool"><span class="icon">🔄</span><span class="name">assessment_flow</span><span class="sub">START→prepare→Granite→END</span></div>
+      <div class="node n-tool"><span class="icon">🔄</span><span class="name">coaching_flow</span><span class="sub">START→Granite roadmap→END</span></div>
+    </div>
+  </div>
+
+  
+  <div class="flow-path">
+    <div class="fp-title">End-to-End Flow — Career Assessment Request</div>
+    <div class="fp-nodes">
+      <div class="fp-node">Student fills form</div>
+      <div class="fp-arr">→</div>
+      <div class="fp-node">fetch POST /api/assess</div>
+      <div class="fp-arr">→</div>
+      <div class="fp-node">score_pathways()</div>
+      <div class="fp-arr">→</div>
+      <div class="fp-node">Build Granite prompt</div>
+      <div class="fp-arr">→</div>
+      <div class="fp-node highlight">IBM IAM token</div>
+      <div class="fp-arr">→</div>
+      <div class="fp-node highlight">Granite-4-h-small</div>
+      <div class="fp-arr">→</div>
+      <div class="fp-node">JSON response</div>
+      <div class="fp-arr">→</div>
+      <div class="fp-node">Render cards + report</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:24px;padding-top:14px;border-top:1px solid #2e3250;font-size:0.7rem;color:#475569">
+    Made with IBM Bob
+  </div>
+
+</div>
+</body>
+</html>
