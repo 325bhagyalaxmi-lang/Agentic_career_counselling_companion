@@ -17,7 +17,7 @@ app = Flask(__name__, static_folder="frontend", static_url_path="")
 WX_URL     = "https://us-south.ml.cloud.ibm.com/ml/v1/text/generation?version=2023-05-29"
 MODEL_ID   = "ibm/granite-4-h-small"
 PROJECT_ID = "96976d6c-b08d-4aa0-86e8-8c67fdb04468"
-API_KEY    = os.environ.get("IBM_API_KEY", "JFgzcUApwzdyD9TWf1UfYhH2dqyfbIcd-ij6uRHVS392")
+API_KEY    = os.environ.get("IBM_API_KEY", "")
 
 # ── Market data (embedded, no external calls) ────────────────────────────────
 MARKET_DATA = {
@@ -71,6 +71,9 @@ def get_iam_token():
 
 
 def call_granite(prompt: str, max_tokens: int = 600) -> str:
+    if not API_KEY:
+        app.logger.error("IBM_API_KEY environment variable is not set.")
+        return None
     try:
         token = get_iam_token()
         payload = {
@@ -93,7 +96,36 @@ def call_granite(prompt: str, max_tokens: int = 600) -> str:
         r.raise_for_status()
         return r.json()["results"][0]["generated_text"].strip()
     except Exception as e:
-        return f"[IBM Granite unavailable: {str(e)}. Showing rule-based response.]"
+        app.logger.error("IBM Granite call failed: %s", e)
+        return None
+
+
+def rule_based_reply(message: str) -> str:
+    """Simple keyword-based fallback when Granite is unavailable."""
+    msg = message.lower()
+    if any(w in msg for w in ["hello", "hi", "hey"]):
+        return "Hello! I'm your AI career counsellor. How can I help you today? You can ask me about career paths, skill gaps, or job market trends."
+    if any(w in msg for w in ["career", "path", "field", "job"]):
+        return ("There are many exciting career fields right now! High-demand areas include "
+                "Artificial Intelligence, Data Science, Cybersecurity, Cloud Computing, and Healthcare. "
+                "Tell me about your subjects and interests and I'll help narrow it down.")
+    if any(w in msg for w in ["skill", "learn", "study", "course"]):
+        return ("Great question on skills! Start with fundamentals in your target field. "
+                "Free resources like Coursera, freeCodeCamp, and Khan Academy are excellent starting points. "
+                "Consistency is key — even 1–2 hours a day adds up quickly.")
+    if any(w in msg for w in ["salary", "pay", "earn", "money"]):
+        return ("Salaries vary widely by field and location. Tech roles like AI and Cloud typically range "
+                "$90K–$180K. Healthcare and Finance can reach $200K+. "
+                "Use the Market Trends tab for detailed figures per field.")
+    if any(w in msg for w in ["university", "college", "degree", "course"]):
+        return ("A degree is valuable but not always required! Many tech roles value skills and portfolio over degrees. "
+                "Consider certifications (AWS, Google, Microsoft) alongside or instead of a degree depending on your target field.")
+    if any(w in msg for w in ["interview", "resume", "cv", "apply"]):
+        return ("For job applications: tailor your CV to the role, highlight projects and measurable achievements, "
+                "and practice common interview questions for your field. "
+                "LinkedIn and GitHub profiles are essential for tech roles.")
+    return ("I'm here to help with career counselling! You can ask me about specific career fields, "
+            "skills to learn, salary expectations, or how to get started in a new area. What's on your mind?")
 
 
 def score_pathways(subjects: list, interests: list) -> list:
@@ -145,6 +177,15 @@ def assess():
         f"Be specific, encouraging, and concise (under 400 words)."
     )
     advice = call_granite(prompt)
+    if advice is None:
+        top_names = ", ".join(f.title() for f, _ in top3)
+        advice = (
+            f"Hi {name}! Based on your academic scores and interests, "
+            f"your top matching career fields are: {top_names}. "
+            f"These paths align well with your strengths. "
+            f"Explore each field's required skills below and start building "
+            f"your roadmap — consistency and curiosity are your greatest assets!"
+        )
 
     pathways_out = []
     for field, score in top3:
@@ -195,6 +236,22 @@ def skillgap():
         f"Be specific and encouraging. Under 350 words."
     )
     roadmap = call_granite(prompt)
+    if roadmap is None:
+        if missing:
+            roadmap = (
+                f"To enter {target.title()}, focus on these key skills: "
+                f"{', '.join(missing[:5])}{'...' if len(missing) > 5 else ''}. "
+                f"Spread your {hours} hours/week evenly across topics. "
+                f"Great free resources: freeCodeCamp, Coursera (audit for free), "
+                f"Khan Academy, and YouTube tutorials. Start with the fundamentals "
+                f"and build one project per month to reinforce your learning."
+            )
+        else:
+            roadmap = (
+                f"You already have all the core skills for {target.title()}! "
+                f"Use your {months} months to deepen your expertise, build "
+                f"portfolio projects, and start applying for internships or roles."
+            )
 
     return jsonify({
         "present":   present,
@@ -222,6 +279,8 @@ def chat():
         + f"User: {message}\nCounsellor:"
     )
     reply = call_granite(prompt, max_tokens=400)
+    if reply is None:
+        reply = rule_based_reply(message)
     return jsonify({"reply": reply})
 
 
@@ -235,4 +294,11 @@ def market():
 
 if __name__ == "__main__":
     os.makedirs("frontend", exist_ok=True)
+    if not API_KEY:
+        print(
+            "\n⚠️  WARNING: IBM_API_KEY environment variable is not set.\n"
+            "   IBM Granite LLM will be unavailable; rule-based fallbacks will be used.\n"
+            "   Set it with:  set IBM_API_KEY=<your-key>   (Windows)\n"
+            "                 export IBM_API_KEY=<your-key> (Linux/macOS)\n"
+        )
     app.run(debug=True, port=5000)

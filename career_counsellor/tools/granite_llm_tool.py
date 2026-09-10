@@ -14,7 +14,7 @@ _PROJECT_ID = "96976d6c-b08d-4aa0-86e8-8c67fdb04468"
 
 
 def _get_api_key() -> str:
-    return os.environ.get("IBM_API_KEY", "JFgzcUApwzdyD9TWf1UfYhH2dqyfbIcd-ij6uRHVS392")
+    return os.environ.get("IBM_API_KEY", "")
 
 
 def _get_iam_token(api_key: str) -> str:
